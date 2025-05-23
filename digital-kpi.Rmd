@@ -511,12 +511,42 @@ appt_online_physician_summary <- appt_online_physician %>%
   pivot_wider(names_from = c("online_exclude_criteria", "avail_online", "sched_online"),
               values_from = appts_sched,
               values_fill = 0) %>%
-  mutate(perc_avail_online_all = (EXC_avail_Y_sched_N + EXC_avail_Y_sched_Y + INC_avail_Y_sched_N + INC_avail_Y_sched_Y) / 
+  mutate(total_online_bookings = sum(EXC_avail_N_sched_N, EXC_avail_Y_sched_N, EXC_avail_Y_sched_Y, INC_avail_N_sched_N, INC_avail_Y_sched_N, INC_avail_Y_sched_Y, na.rm = T),
+         perc_avail_online_all = (EXC_avail_Y_sched_N + EXC_avail_Y_sched_Y + INC_avail_Y_sched_N + INC_avail_Y_sched_Y) / 
            (EXC_avail_N_sched_N + EXC_avail_Y_sched_N + EXC_avail_Y_sched_Y + INC_avail_N_sched_N + INC_avail_Y_sched_N + INC_avail_Y_sched_Y),
          perc_sched_online_all = (EXC_avail_Y_sched_Y + INC_avail_Y_sched_Y) / 
            (EXC_avail_N_sched_N + EXC_avail_Y_sched_N + EXC_avail_Y_sched_Y + INC_avail_N_sched_N + INC_avail_Y_sched_N + INC_avail_Y_sched_Y),
+         total_online_bookings_inScope = sum(INC_avail_N_sched_N, INC_avail_Y_sched_N, INC_avail_Y_sched_Y, na.rm = T),
          perc_avail_online_inScope = (INC_avail_Y_sched_N + INC_avail_Y_sched_Y) / (INC_avail_N_sched_N + INC_avail_Y_sched_N + INC_avail_Y_sched_Y),
-         perc_sched_online_inScope = (INC_avail_Y_sched_Y) / (INC_avail_N_sched_N + INC_avail_Y_sched_N + INC_avail_Y_sched_Y)) %>%
+         perc_sched_online_inScope = (INC_avail_Y_sched_Y) / (INC_avail_N_sched_N + INC_avail_Y_sched_N + INC_avail_Y_sched_Y),
+         total_online_bookings_outScope = sum(EXC_avail_N_sched_N, EXC_avail_Y_sched_N, EXC_avail_Y_sched_Y, na.rm = T),
+         perc_avail_online_outScope = (EXC_avail_Y_sched_N + EXC_avail_Y_sched_Y) / (EXC_avail_N_sched_N + EXC_avail_Y_sched_N + EXC_avail_Y_sched_Y),
+         perc_sched_online_outScope = (EXC_avail_Y_sched_Y) / (EXC_avail_N_sched_N + EXC_avail_Y_sched_N + EXC_avail_Y_sched_Y)) %>%
+         # perc_sched_online = (avail_Y_sched_Y) / (avail_Y_sched_Y + avail_Y_sched_N)) %>%
+  rename("Year" = appt_made_year,
+         "Month" = appt_made_month)
+
+
+appt_online_criteria_summary <- appt_online_physician %>%
+  filter(avail_online_exclude == "N") %>%
+  group_by(PROV_TYPE, PRC_ID, PRC_NAME, appt_made_year, appt_made_month,
+           avail_online, sched_online, online_exclude_criteria) %>%
+  summarise(appts_sched = sum(total, na.rm = T)) %>%
+  mutate(online_exclude_criteria_dup = online_exclude_criteria) %>%
+  pivot_wider(names_from = c("online_exclude_criteria", "avail_online", "sched_online"),
+              values_from = appts_sched,
+              values_fill = 0) %>%
+ mutate(total_online_bookings = sum(EXC_avail_N_sched_N, EXC_avail_Y_sched_N, EXC_avail_Y_sched_Y, INC_avail_N_sched_N, INC_avail_Y_sched_N, INC_avail_Y_sched_Y, na.rm = T),
+         perc_avail_online_all = (EXC_avail_Y_sched_N + EXC_avail_Y_sched_Y + INC_avail_Y_sched_N + INC_avail_Y_sched_Y) / 
+           (EXC_avail_N_sched_N + EXC_avail_Y_sched_N + EXC_avail_Y_sched_Y + INC_avail_N_sched_N + INC_avail_Y_sched_N + INC_avail_Y_sched_Y),
+         perc_sched_online_all = (EXC_avail_Y_sched_Y + INC_avail_Y_sched_Y) / 
+           (EXC_avail_N_sched_N + EXC_avail_Y_sched_N + EXC_avail_Y_sched_Y + INC_avail_N_sched_N + INC_avail_Y_sched_N + INC_avail_Y_sched_Y),
+         total_online_bookings_inScope = sum(INC_avail_N_sched_N, INC_avail_Y_sched_N, INC_avail_Y_sched_Y, na.rm = T),
+         perc_avail_online_inScope = (INC_avail_Y_sched_N + INC_avail_Y_sched_Y) / (INC_avail_N_sched_N + INC_avail_Y_sched_N + INC_avail_Y_sched_Y),
+         perc_sched_online_inScope = (INC_avail_Y_sched_Y) / (INC_avail_N_sched_N + INC_avail_Y_sched_N + INC_avail_Y_sched_Y),
+         total_online_bookings_outScope = sum(EXC_avail_N_sched_N, EXC_avail_Y_sched_N, EXC_avail_Y_sched_Y, na.rm = T),
+         perc_avail_online_outScope = (EXC_avail_Y_sched_N + EXC_avail_Y_sched_Y) / (EXC_avail_N_sched_N + EXC_avail_Y_sched_N + EXC_avail_Y_sched_Y),
+         perc_sched_online_outScope = (EXC_avail_Y_sched_Y) / (EXC_avail_N_sched_N + EXC_avail_Y_sched_N + EXC_avail_Y_sched_Y)) %>%
          # perc_sched_online = (avail_Y_sched_Y) / (avail_Y_sched_Y + avail_Y_sched_N)) %>%
   rename("Year" = appt_made_year,
          "Month" = appt_made_month)
@@ -647,11 +677,14 @@ reactable(
              headerStyle = list(color = "black", fontSize = "15px"),
              sticky = "left"),
     colGroup(name = paste0("All Visits"),
-             columns = c("perc_avail_online_all", "perc_sched_online_all"),
+             columns = c("total_online_bookings", "perc_avail_online_all", "perc_sched_online_all"),
              headerStyle = list(background = "#212070", color = "white", fontSize = "15px")),
     colGroup(name = paste0("Visits in Scope"),
-             columns = c("perc_avail_online_inScope", "perc_sched_online_inScope"),
-             headerStyle = list(background = "#d80b8c", color = "white", fontSize = "15px"))
+             columns = c("total_online_bookings_inScope", "perc_avail_online_inScope", "perc_sched_online_inScope"),
+             headerStyle = list(background = "#d80b8c", color = "white", fontSize = "15px")),
+    colGroup(name = paste0("Visits out of Scope"),
+             columns = c("total_online_bookings_outScope", "perc_avail_online_outScope", "perc_sched_online_outScope"),
+             headerStyle = list(background = "#00aeef", color = "white", fontSize = "15px"))
     ),
 
   columns = list(
@@ -681,11 +714,18 @@ reactable(
     
     PROV_TYPE = colDef(
       name = "Provider Type",
-      maxWidth = 230),
+      maxWidth = 200),
     
     PROV_NAME_WID = colDef(
       name = "Provider",
       maxWidth = 230),
+    
+    total_online_bookings = colDef(
+      name = "Total Bookings*",
+      aggregate = 'sum',
+      format = colFormat(separator = TRUE, digits = 0),
+      headerStyle = list(background = "#212070", color = "white", fontWeight = "Bold", fontSize = "14px"),
+      maxWidth = 120),
 
     perc_avail_online_all = colDef(
       name = "% Available Online",
@@ -737,6 +777,13 @@ reactable(
       }"),
       format = colFormat(percent = TRUE, digits = 1)
     ),
+    
+    total_online_bookings_inScope = colDef(
+      name = "Total Bookings*",
+      aggregate = 'sum',
+      format = colFormat(separator = TRUE, digits = 0),
+      headerStyle = list(background = "#d80b8c", color = "white", fontWeight = "Bold", fontSize = "14px"),
+      maxWidth = 120),
 
     perc_avail_online_inScope = colDef(
       name = "% Available Online",
@@ -777,6 +824,52 @@ reactable(
       format = colFormat(percent = TRUE, digits = 1)
     ),
 
+    total_online_bookings_outScope = colDef(
+      name = "Total Bookings*",
+      aggregate = 'sum',
+      format = colFormat(separator = TRUE, digits = 0),
+      headerStyle = list(background = "#00aeef", color = "white", fontWeight = "Bold", fontSize = "14px"),
+      maxWidth = 120),
+    
+    perc_avail_online_outScope = colDef(
+      name = "% Available Online",
+      aggregate = JS("function(values, rows) {
+        let totalEXC_avail_Y_sched_N = 0
+        let totalEXC_avail_Y_sched_Y = 0
+        let totalEXC_avail_N_sched_N = 0
+        rows.forEach(function(row) {
+          totalEXC_avail_Y_sched_N += row['EXC_avail_Y_sched_N']
+          totalEXC_avail_Y_sched_Y += row['EXC_avail_Y_sched_Y']
+          totalEXC_avail_N_sched_N += row['EXC_avail_N_sched_N']
+        })
+        return (totalEXC_avail_Y_sched_N + totalEXC_avail_Y_sched_Y) / 
+           (totalEXC_avail_N_sched_N + totalEXC_avail_Y_sched_N + totalEXC_avail_Y_sched_Y) || '-'
+      }"),
+      maxWidth = 100,
+      headerStyle = list(background = "#00aeef", color = "white", fontWeight = "Bold", fontSize = "14px"),
+      format = colFormat(percent = TRUE, digits = 1)
+      ),
+
+    perc_sched_online_outScope = colDef(
+      name = "% Scheduled Online",
+      maxWidth = 100,
+      headerStyle = list(background = "#00aeef", color = "white", fontWeight = "Bold", fontSize = "14px"),
+      # Calculate the aggregate conversion rate as `(total-pending) / total`
+      aggregate = JS("function(values, rows) {
+        let totalEXC_avail_Y_sched_N = 0
+        let totalEXC_avail_Y_sched_Y = 0
+        let totalEXC_avail_N_sched_N = 0
+        rows.forEach(function(row) {
+          totalEXC_avail_Y_sched_N += row['EXC_avail_Y_sched_N']
+          totalEXC_avail_Y_sched_Y += row['EXC_avail_Y_sched_Y']
+          totalEXC_avail_N_sched_N += row['EXC_avail_N_sched_N']
+        })
+        return (totalEXC_avail_Y_sched_Y) / 
+           (totalEXC_avail_N_sched_N + totalEXC_avail_Y_sched_N + totalEXC_avail_Y_sched_Y) || '-'
+      }"),
+      format = colFormat(percent = TRUE, digits = 1)
+    ),
+    
     DEPARTMENT_ID = colDef(show =F),
     PROV_ID = colDef(show =F),
     EXC_avail_N_sched_N = colDef(show =F),
@@ -795,9 +888,259 @@ reactable(
 
 ```
 <br/>
-<p style="font-size:10pt; font-style:italic">*New Patient is defined by level of service; New Patient Ratio is calculated based on (Total New Patients Arrived) / (Total Patients Arrived)<p/>
-<p style="font-size:10pt; font-style:italic">*Primary Care includes Adolescent Medicine, Community and Preventative Medicine, Internal Medicine, Family Medicine, Pediatrics, Geriatrics, Urgent Care<p/>
 
-<br/>
-<br/>
 
+## Metrics by In Scope Criteria
+```{r Digital KPI Output Output, echo = FALSE, warning = FALSE, message = FALSE}
+
+
+htmltools::browsable(
+  tagList(
+    tags$button(
+      tagList(fontawesome::fa("download"), "Download Table"),
+      onclick = "Reactable.downloadDataCSV('digital-metrics-criteria', 'Online Scheduling Scope Criteria')"
+    ),
+
+# htmltools::browsable(
+#   tagList(
+#     div(tags$label("Summary by", `for` = "access-metrics")),
+#     tags$select(
+#       id = "new-pt-waitTime",
+#       onchange = "Reactable.setGroupBy('access-metrics', this.value ? [this.value] : [])",
+#       tags$option("None", value = ""),
+#       lapply(c("Year", "Year-Month", "SITE", "Specialty Type", "Specialty"), tags$option)
+#     ),
+# 
+#     tags$hr("aria-hidden" = "true"),
+    
+reactable(
+  appt_online_criteria_summary, 
+  elementId = "digital-metrics-criteria",
+  # elementId = "referral-vol-download-table",
+  style = list(fontFamily = 'Calibri',
+                 fontSize = '14px'),
+    defaultColDef = colDef(align = "left",
+                           headerStyle = list(fontWeight = "Bold", fontSize = "14px"),
+                           headerClass = "bar-sort-header"),
+  # RowStyle = function(index) {
+  #           if (index %in% c(nrow(referral_vol_site_data_mshs))) {
+  #             list(`border-top` = "2px solid rgb(184,184,184)",
+  #                  fontWeight = "Bold")
+  #           }
+  #         },
+    highlight = TRUE,
+    # filterable = TRUE,
+    pagination = FALSE,
+    # height = 800,
+    wrap = TRUE,
+  searchable = TRUE,
+
+  groupBy = c("Year", "Month", "PROV_TYPE"),
+
+  columnGroups = list(
+    colGroup(name = "", columns = c("Year", "Month", "PROV_TYPE", "PRC_NAME", "online_exclude_criteria_dup"),
+             headerStyle = list(color = "black", fontSize = "15px"),
+             sticky = "left"),
+    colGroup(name = paste0("All Visits"),
+             columns = c("total_online_bookings", "perc_avail_online_all", "perc_sched_online_all"),
+             headerStyle = list(background = "#212070", color = "white", fontSize = "15px")),
+    colGroup(name = paste0("Visits in Scope"),
+             columns = c("total_online_bookings_inScope", "perc_avail_online_inScope", "perc_sched_online_inScope"),
+             headerStyle = list(background = "#d80b8c", color = "white", fontSize = "15px")),
+    colGroup(name = paste0("Visits out of Scope"),
+             columns = c("total_online_bookings_outScope", "perc_avail_online_outScope", "perc_sched_online_outScope"),
+             headerStyle = list(background = "#00aeef", color = "white", fontSize = "15px"))
+    ),
+
+  columns = list(
+
+   online_exclude_criteria_dup = colDef(
+      name = "In Scope for Digital Access?",
+      maxWidth = 100),
+    
+    Year = colDef(
+      maxWidth = 100),
+
+    `Month` = colDef(
+      maxWidth = 100),
+
+    PROV_TYPE = colDef(
+      name = "Provider Type",
+      maxWidth = 230),
+    
+    # PROV_NAME_WID = colDef(
+    #   name = "Provider",
+    #   maxWidth = 230),
+    
+    PRC_NAME = colDef(
+      name = "PRC Name",
+      maxWidth = 230),
+    
+    total_online_bookings = colDef(
+      name = "Total Bookings*",
+      aggregate = 'sum',
+      format = colFormat(separator = TRUE, digits = 0),
+      headerStyle = list(background = "#212070", color = "white", fontWeight = "Bold", fontSize = "14px"),
+      maxWidth = 120),
+
+    perc_avail_online_all = colDef(
+      name = "% Available Online",
+      aggregate = JS("function(values, rows) {
+        let totalEXC_avail_Y_sched_N = 0
+        let totalEXC_avail_Y_sched_Y = 0
+        let totalEXC_avail_N_sched_N = 0
+        let totalINC_avail_Y_sched_N = 0
+        let totalINC_avail_Y_sched_Y = 0
+        let totalINC_avail_N_sched_N = 0
+        rows.forEach(function(row) {
+          totalEXC_avail_Y_sched_N += row['EXC_avail_Y_sched_N']
+          totalEXC_avail_Y_sched_Y += row['EXC_avail_Y_sched_Y']
+          totalEXC_avail_N_sched_N += row['EXC_avail_N_sched_N']
+          totalINC_avail_Y_sched_N += row['INC_avail_Y_sched_N']
+          totalINC_avail_Y_sched_Y += row['INC_avail_Y_sched_Y']
+          totalINC_avail_N_sched_N += row['INC_avail_N_sched_N']
+        })
+        return (totalEXC_avail_Y_sched_N + totalEXC_avail_Y_sched_Y + totalINC_avail_Y_sched_N + totalINC_avail_Y_sched_Y) / 
+           (totalEXC_avail_N_sched_N + totalEXC_avail_Y_sched_N + totalEXC_avail_Y_sched_Y + totalINC_avail_N_sched_N + totalINC_avail_Y_sched_N + totalINC_avail_Y_sched_Y) || '-'
+      }"),
+      maxWidth = 100,
+      headerStyle = list(background = "#212070", color = "white", fontWeight = "Bold", fontSize = "14px"),
+      format = colFormat(percent = TRUE, digits = 1)
+      ),
+
+    perc_sched_online_all = colDef(
+      name = "% Scheduled Online",
+      maxWidth = 100,
+      headerStyle = list(background = "#212070", color = "white", fontWeight = "Bold", fontSize = "14px"),
+      # Calculate the aggregate conversion rate as `(total-pending) / total`
+      aggregate = JS("function(values, rows) {
+        let totalEXC_avail_Y_sched_N = 0
+        let totalEXC_avail_Y_sched_Y = 0
+        let totalEXC_avail_N_sched_N = 0
+        let totalINC_avail_Y_sched_N = 0
+        let totalINC_avail_Y_sched_Y = 0
+        let totalINC_avail_N_sched_N = 0
+        rows.forEach(function(row) {
+          totalEXC_avail_Y_sched_N += row['EXC_avail_Y_sched_N']
+          totalEXC_avail_Y_sched_Y += row['EXC_avail_Y_sched_Y']
+          totalEXC_avail_N_sched_N += row['EXC_avail_N_sched_N']
+          totalINC_avail_Y_sched_N += row['INC_avail_Y_sched_N']
+          totalINC_avail_Y_sched_Y += row['INC_avail_Y_sched_Y']
+          totalINC_avail_N_sched_N += row['INC_avail_N_sched_N']
+        })
+        return (totalEXC_avail_Y_sched_Y + totalINC_avail_Y_sched_Y) / 
+           (totalEXC_avail_N_sched_N + totalEXC_avail_Y_sched_N + totalEXC_avail_Y_sched_Y + totalINC_avail_N_sched_N + totalINC_avail_Y_sched_N + totalINC_avail_Y_sched_Y) || '-'
+      }"),
+      format = colFormat(percent = TRUE, digits = 1)
+    ),
+    
+    total_online_bookings_inScope = colDef(
+      name = "Total Bookings*",
+      aggregate = 'sum',
+      format = colFormat(separator = TRUE, digits = 0),
+      headerStyle = list(background = "#d80b8c", color = "white", fontWeight = "Bold", fontSize = "14px"),
+      maxWidth = 120),
+
+    perc_avail_online_inScope = colDef(
+      name = "% Available Online",
+      aggregate = JS("function(values, rows) {
+        let totalINC_avail_Y_sched_N = 0
+        let totalINC_avail_Y_sched_Y = 0
+        let totalINC_avail_N_sched_N = 0
+        rows.forEach(function(row) {
+          totalINC_avail_Y_sched_N += row['INC_avail_Y_sched_N']
+          totalINC_avail_Y_sched_Y += row['INC_avail_Y_sched_Y']
+          totalINC_avail_N_sched_N += row['INC_avail_N_sched_N']
+        })
+        return (totalINC_avail_Y_sched_N + totalINC_avail_Y_sched_Y) / 
+           (totalINC_avail_N_sched_N + totalINC_avail_Y_sched_N + totalINC_avail_Y_sched_Y) || '-'
+      }"),
+      maxWidth = 100,
+      headerStyle = list(background = "#d80b8c", color = "white", fontWeight = "Bold", fontSize = "14px"),
+      format = colFormat(percent = TRUE, digits = 1)
+      ),
+    
+    perc_sched_online_inScope = colDef(
+      name = "% Scheduled Online",
+      maxWidth = 100,
+      headerStyle = list(background = "#d80b8c", color = "white", fontWeight = "Bold", fontSize = "14px"),
+      # Calculate the aggregate conversion rate as `(total-pending) / total`
+      aggregate = JS("function(values, rows) {
+        let totalINC_avail_Y_sched_N = 0
+        let totalINC_avail_Y_sched_Y = 0
+        let totalINC_avail_N_sched_N = 0
+        rows.forEach(function(row) {
+          totalINC_avail_Y_sched_N += row['INC_avail_Y_sched_N']
+          totalINC_avail_Y_sched_Y += row['INC_avail_Y_sched_Y']
+          totalINC_avail_N_sched_N += row['INC_avail_N_sched_N']
+        })
+        return (totalINC_avail_Y_sched_Y) / 
+           (totalINC_avail_N_sched_N + totalINC_avail_Y_sched_N + totalINC_avail_Y_sched_Y) || '-'
+      }"),
+      format = colFormat(percent = TRUE, digits = 1)
+    ),
+    
+    total_online_bookings_outScope = colDef(
+      name = "Total Bookings*",
+      aggregate = 'sum',
+      format = colFormat(separator = TRUE, digits = 0),
+      headerStyle = list(background = "#00aeef", color = "white", fontWeight = "Bold", fontSize = "14px"),
+      maxWidth = 120),
+
+    perc_avail_online_outScope = colDef(
+      name = "% Available Online",
+      aggregate = JS("function(values, rows) {
+        let totalEXC_avail_Y_sched_N = 0
+        let totalEXC_avail_Y_sched_Y = 0
+        let totalEXC_avail_N_sched_N = 0
+        rows.forEach(function(row) {
+          totalEXC_avail_Y_sched_N += row['EXC_avail_Y_sched_N']
+          totalEXC_avail_Y_sched_Y += row['EXC_avail_Y_sched_Y']
+          totalEXC_avail_N_sched_N += row['EXC_avail_N_sched_N']
+        })
+        return (totalEXC_avail_Y_sched_N + totalEXC_avail_Y_sched_Y) / 
+           (totalEXC_avail_N_sched_N + totalEXC_avail_Y_sched_N + totalEXC_avail_Y_sched_Y) || '-'
+      }"),
+      maxWidth = 100,
+      headerStyle = list(background = "#00aeef", color = "white", fontWeight = "Bold", fontSize = "14px"),
+      format = colFormat(percent = TRUE, digits = 1)
+      ),
+
+    perc_sched_online_outScope = colDef(
+      name = "% Scheduled Online",
+      maxWidth = 100,
+      headerStyle = list(background = "#00aeef", color = "white", fontWeight = "Bold", fontSize = "14px"),
+      # Calculate the aggregate conversion rate as `(total-pending) / total`
+      aggregate = JS("function(values, rows) {
+        let totalEXC_avail_Y_sched_N = 0
+        let totalEXC_avail_Y_sched_Y = 0
+        let totalEXC_avail_N_sched_N = 0
+        rows.forEach(function(row) {
+          totalEXC_avail_Y_sched_N += row['EXC_avail_Y_sched_N']
+          totalEXC_avail_Y_sched_Y += row['EXC_avail_Y_sched_Y']
+          totalEXC_avail_N_sched_N += row['EXC_avail_N_sched_N']
+        })
+        return (totalEXC_avail_Y_sched_Y) / 
+           (totalEXC_avail_N_sched_N + totalEXC_avail_Y_sched_N + totalEXC_avail_Y_sched_Y) || '-'
+      }"),
+      format = colFormat(percent = TRUE, digits = 1)
+    ),
+    
+    DEPARTMENT_ID = colDef(show =F),
+    PROV_ID = colDef(show =F),
+    PRC_ID = colDef(show =F),
+    EXC_avail_N_sched_N = colDef(show =F),
+    EXC_avail_Y_sched_N = colDef(show =F),
+    EXC_avail_Y_sched_Y = colDef(show =F),
+    INC_avail_N_sched_N = colDef(show =F),
+    INC_avail_Y_sched_N= colDef(show =F),
+    INC_avail_Y_sched_Y = colDef(show =F)
+    
+
+  ) # Close Columns
+
+  ) # Close Reactable
+) # Close Taglist
+) # Close htmltools
+
+```
