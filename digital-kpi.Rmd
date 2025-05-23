@@ -1,0 +1,803 @@
+---
+output:
+  html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+```
+<style type="text/css">
+div.main-container {
+  max-width: 2000px;
+  margin-left: 0;
+  margin-right: auto;
+}
+</style>
+<style>
+.tocify {
+color: black;
+}
+<!-- } -->
+<!-- .tocify .tocify-header { -->
+<!--     position: fixed; -->
+<!--     <!-- top: 50px; --> -->
+<!--     left: 50px; -->
+<!--     width: 350px; -->
+<!--     <!-- border: solid 3px black; --> -->
+<!--     <!-- height: 200px; --> -->
+<!--  border: none; -->
+<!-- } -->
+.tocify .tocify-header .active {
+color: white;
+background: #d80b8c;
+font-weight: bold;
+}
+<!-- .tocify .tocify-item { -->
+<!-- background: white; -->
+<!-- color: black; -->
+<!--  border: none; -->
+<!-- } -->
+</style>
+<style>
+  .nav-pills>li>a:hover, .nav-pills>li>a:focus, .nav-pills>li.active>a,     .nav-pills>li.active>a:hover, .nav-pills>li.active>a:focus{
+     background-color: #212070;
+     }
+</style>
+<style>
+.container { width: 1800px; }
+h2 {
+  background-color: #dddedd;
+  color: black;
+  text-indent: 20px;
+  <!-- font-weight: bold; -->
+}
+h3 {
+  background-color: #f2f2f2;
+  color: black;
+  text-indent: 20px;
+  <!-- font-weight: bold; -->
+}
+h4 {
+  <!-- background-color: #dddedd; -->
+  <!-- color: black; -->
+  text-indent: 50px;
+  <!-- font-weight: bold; -->
+}
+</style>
+<style>
+.blackbox {
+  padding: 1em;
+  background: white;
+  color: black;
+  border: 2px solid #7f7f7f;
+  width: 100%;
+  position: center;
+  align: center;
+  margin: 0px auto;
+}
+.center {
+  text-align: left;
+  margin: 0px auto;
+}
+</style>
+<!-- ```{css toc-content, echo = FALSE} -->
+<!-- #TOC { -->
+<!--   right: 270px; -->
+<!--   margin: 20px 0px 25px 0px; -->
+<!-- } -->
+<!-- .main-container { -->
+<!--     margin-left: 200px; -->
+<!-- } -->
+<!-- ``` -->
+```{r Load Packages, echo = FALSE, warning = FALSE, message = FALSE}
+
+# # Load packages -----------------------------------------------------------------------------------
+suppressMessages({
+  memory.limit(size = 8000000)
+  library(readxl)
+  library(writexl)
+  library(plyr)
+  library(dplyr)
+  library(data.table)
+  library(zoo)
+  library(shiny)
+  library(shinydashboard)
+  library(shinydashboardPlus)
+  library(shinyWidgets)
+  library(htmlwidgets)
+  library(lubridate)
+  library(tcltk)
+  library(tidyverse)
+  library(plotly)
+  library(knitr)
+  library(kableExtra)
+  library(leaflet)
+  library(grid)
+  library(gridExtra)
+  library(eeptools)
+  library(ggQC)
+  library(zipcodeR)
+  library(utils)
+  library(scales)
+  library(chron)
+  library(bupaR)
+  library(shiny)
+  library(DT)
+  library(DiagrammeR)
+  library(shinyalert)
+  library(edeaR)
+  library(processmapR)
+  library(processmonitR)
+  library(processanimateR)
+  library(tidyr)
+  library(lubridate)
+  library(RColorBrewer)
+  library(DiagrammeR)
+  library(ggplot2)
+  library(leaflet)
+  library(readr)
+  library(highcharter)
+  library(ggforce) # for 'geom_arc_bar'
+  library(packcircles) # for packed circle graph
+  library(viridis)
+  library(ggiraph)
+  library(treemapify)
+  library(treemap)
+  library(broom)
+  library(extrafont)
+  library(tis) # for US holidays
+  library(vroom)
+  library(sjmisc)
+  library(tools)
+  library(here)
+  library(shinyBS)
+  library(shinyscreenshot)
+  library(fasttime)
+  library(shinycssloaders)
+  library(feather)
+  # library(zipcodeR)
+  library(formattable)
+  library(shinyjs)
+  library(janitor)
+  library(patchwork)
+  library(flexdashboard)
+  # library(tidyverse)
+  # library(viridis)
+  # library(hrbrthemes)
+  # library(plotly)
+  # install.packages("bsts")
+  library(bsts)
+  library(reactable)
+  # install.packages("reactablefmtr")
+  library(reactablefmtr)
+  library(svDialogs)
+  # library(openxlsx)
+  library(flextable)
+  library(officedown)
+  library(officer)
+  library(magrittr)
+  library(webshot) 
+  library(png)
+  library(ggh4x)
+  library(RODBC)
+  library(DBI)
+  library(odbc)
+  library(dbplyr)
+  library(pool)
+  library(emojifont)
+  library(lubridate)
+})
+
+# devtools::install_github("hafen/lazyrmd")
+# require(lazyrmd)
+# 
+# options(repos = c(tessera = "http://packages.tessera.io",
+#   getOption("repos")))
+# install.packages("lazyrmd")
+# require(lazyrmd)
+
+```
+
+
+```{r Graph asthetics, echo = FALSE, warning = FALSE, message = FALSE}
+### Color Functions for Graphs ============================================================
+
+# Mount Sinai corporate colors "USE THIS TO ADD COLORS"
+MountSinai_colors <- c(
+  `dark purple`  = "#212070",
+  `dark pink`    = "#d80b8c",
+  `dark blue`    = "#00aeef",
+  `dark grey`    = "#7f7f7f",
+  `yellow`       = "#ffc000",
+  `purple`       = "#7030a0",
+  `med purple`   = "#5753d0",
+  `med pink`     = "#f75dbe",
+  `med blue`     = "#5cd3ff",
+  `med grey`     = "#a5a7a5",
+  `light purple` = "#c7c6ef",
+  `light pink`   = "#fcc9e9",
+  `light blue`   = "#c9f0ff",
+  `light grey`   = "#dddedd"
+  )
+
+# Function to extract Mount Sinai colors as hex codes
+# Use Character names of MountSinai_colors
+
+MountSinai_cols <- function(...) {
+  cols <- c(...)
+  
+  if (is.null(cols))
+    return (MountSinai_colors)
+  
+  MountSinai_colors[cols]
+}
+
+# Color Function that can be used to call all colors is "MountSinai_cols()"
+# Use in ggplot 
+
+  #MountSinai_cols()       # will provide all colors and their hex codes in a table 
+  #MountSinai_cols("pink") # will provide color name and the hex code for the pink color
+
+# Create palettes 
+MountSinai_palettes <- list(
+  `all`   = MountSinai_cols("dark purple","dark pink","dark blue","dark grey",
+                            "med purple","med pink","med blue","med grey", 
+                            "light purple","light pink","light blue","light grey"),
+  
+  `main`  = MountSinai_cols("dark purple","dark pink","dark blue","dark grey"),
+  
+  `purple`  = MountSinai_cols("dark purple","med purple","light purple"),
+  
+  `pink`  = MountSinai_cols("dark pink","med pink","light pink"),
+  
+  `blue`  = MountSinai_cols("dark blue", "med blue", "light blue"),
+  
+  `grey`  = MountSinai_cols("dark grey", "med grey", "light grey"),
+  
+  `purpleGrey` = MountSinai_cols("dark purple", "dark grey"),
+  
+  `pinkBlue` = MountSinai_cols("dark pink", "dark blue")
+  
+)
+
+# MountSinai_palettes
+# Return function to interpolate a Mount Sinai color palette
+# default value is the main palette, reverse = True will change the order
+
+MountSinai_pal <- function(palette = "all", reverse = FALSE, ...) {
+  pal <- MountSinai_palettes[[palette]]
+  
+  if (reverse) pal <- rev(pal)
+  
+  colorRampPalette(pal, ...)
+}
+
+
+
+# Scale Function for ggplot can be used instead of scale_color_manual
+scale_color_MountSinai <- function(palette = "all", discrete = TRUE, reverse = FALSE, ...) {
+  pal <- MountSinai_pal(palette = palette, reverse = reverse)
+  
+  if (discrete) {
+    discrete_scale("colour", paste0("MountSinai_", palette), palette = pal, ...)
+  } else {
+    scale_color_gradientn(colours = pal(256), ...)
+  }
+}
+
+# Scale Fill for ggplot insetead of scale_fill_manual 
+scale_fill_MountSinai <- function(palette = "all", discrete = TRUE, reverse = FALSE, ...) {
+  pal <- MountSinai_pal(palette = palette, reverse = reverse)
+
+  if (discrete) {
+    discrete_scale("fill", paste0("MountSinai_", palette), palette = pal, ...)
+  } else {
+    scale_fill_gradientn(colours = pal(256), ...)
+  }
+}
+
+# Use in ggplot 
+  # scale_color_MountSinai("main")
+
+```
+
+
+```{r Global Functions, echo = FALSE, warning = FALSE, message = FALSE}
+
+'%!in%' <- function(x,y)!('%in%'(x,y)) # Does not include
+not_all_na <- function(x) all(!is.na(x)) # Exclude columns with All NAs
+
+```
+
+
+```{r Data Connections, echo = FALSE, warning = FALSE, message = FALSE}
+
+# Connection to Oracle DB ------------------------------------------------------
+conn1 <- dbPool(drv = odbc(), dsn = "OAO Cloud DB SoYoun", timeout = 30)
+conn3 <- dbPool(drv = odbc(), dsn = "OAO Cloud DB Production", timeout = 30)
+conn2 <- dbConnect(odbc(), 
+                  "Clarity_prod", 
+                  uid = "kweons01" , 
+                  pwd = "kweons01123$")
+conn4 <- dbPool(drv = odbc(), dsn = "OAO Cloud DB Staging", timeout = 30)
+
+conn5 <- dbConnect(odbc(),
+                    Driver = "SQLServer",
+                    # Server = "10.2.42.69", # old server
+                    Server = "datahub-synapse.sql.azuresynapse.net",
+                    database = "datahub_epic_dw",
+                    UID = "MSS_USER",
+                    PWD = "Apple_Bees456$",
+                    Port = 1433)
+
+
+
+# Import Slot Availability Data ------------------------------------------------
+slot_raw_tbl <- tbl(conn2, "Y_DM_BOOKED_FILLED_RATE")
+access_raw_tbl <- tbl(conn2, "MV_DM_PATIENT_ACCESS")
+f_sched_appt_tbl <- tbl(conn2, "F_SCHED_APPT")
+availability_raw_tbl <- tbl(conn2, "V_AVAILABILITY")
+block_raw_tbl <- tbl(conn2, "AVAIL_BLOCK")
+block_name_tbl <- tbl(conn2, "ZC_APPT_BLOCK")
+orders_raw_tbl <- tbl(conn2, "ORDER_PROC")
+coverage_tbl <- clarity_ser_tbl <- tbl(conn2, "CLARITY_SER")
+clarity_ser_tbl <- tbl(conn2, "CLARITY_SER")
+slot_view_tbl <- tbl(conn3, in_schema("OAO_PRODUCTION", "AMBULATORY_SLOT_TABLE"))
+temp_slot_tbl <- tbl(conn4, "AMBULATORY_SLOT_TABLE_TEMP")
+visit_type_tbl <- tbl(conn2, "CL_PRC_VT_GROUPS")
+visit_type_mapping_tbl <- tbl(conn2, "ZC_VISIT_TYPE_GRP")
+
+
+dep_mapping_tbl <- tbl(conn2, "CLARITY_DEP")
+dep_mapping <- dep_mapping_tbl %>%
+  dplyr::select(DEPARTMENT_ID, SPECIALTY) %>%
+  collect()
+
+
+radiology_dep_mapping_tbl <- tbl(conn1, "RADIOLOGY_DEP_MAPPING")
+
+
+# access_raw_tbl <- tbl(conn5, in_schema("CLARITY", "MV_DM_PATIENT_ACCESS"))
+# f_sched_appt_tbl <- tbl(conn5, dbplyr::ident_q('"CLARITY"."F_SCHED_APPT"'))
+clarity_dep_conn <- tbl(conn5, dbplyr::ident_q('"Clarity"."CLARITY_DEP"'))
+
+referrals_conn <- tbl(conn5, dbplyr::ident_q('"MS_SOLUTIONS_DEV"."y_s2_referrals_tmp"'))
+caboodle_referrals_conn <- tbl(conn5, dbplyr::ident_q('"CABOODLE"."ReferralsDataView"'))
+caboodle_referralFact_conn <- tbl(conn5, dbplyr::ident_q('"CABOODLE"."ReferralFact"'))
+patient_conn <- tbl(conn5, dbplyr::ident_q('"CABOODLE"."PatientDim"'))
+department_conn <- tbl(conn5, dbplyr::ident_q('"CABOODLE"."DepartmentDim"'))
+
+access_azure_conn <- tbl(conn5, dbplyr::ident_q('"CLARITY"."MV_DM_PATIENT_ACCESS"'))
+access_azure <- access_azure_conn %>% head(100) %>% collect()
+
+clarity_referrals_tbl <- tbl(conn5, dbplyr::ident_q('"Clarity"."REFERRAL"'))
+
+
+
+
+clarity_ser_tbl <- tbl(conn2, "CLARITY_SER")
+clarity_ser_2_tbl <- tbl(conn2, "CLARITY_SER_2")
+
+clarity_ser <- clarity_ser_tbl %>% select(PROV_ID, PROV_TYPE) %>% collect()
+clarity_ser_2 <- clarity_ser_2_tbl %>% select(PROV_ID, NPI) %>% collect()
+
+
+```
+
+
+
+```{r Report Variables, echo = FALSE, warning = FALSE, message = FALSE}
+
+report_run_date <- Sys.Date()
+date_start <- format(Sys.Date(), "%Y-%m-%d")
+# date_start <- paste0(format(Sys.Date(), "%Y-%m"),"-01")
+
+current_year <- format(report_run_date, "%Y")
+prior_year <- as.character(as.numeric(current_year) -1)
+
+current_month <- format(report_run_date, "%m")
+
+current_year_month <- paste0(current_year,"-",current_month)
+```
+
+
+```{r Digital KPI In Scope Criteria, echo = FALSE, warning = FALSE, message = FALSE}
+
+prov_type_inc <- c("Anesthesiologist",
+                   "Audiologist",
+                   "Dentist",
+                   "Genetic Counselor",
+                   "Midwife",
+                   "Nurse Practitioner",
+                   "Nutritionist",
+                   "Osteopath",
+                   "Pharmacist",
+                   "Physical Therapist",
+                   "Physical Therapist Assistant",
+                   "Physician",
+                   "Physician Assistant",
+                   "Radiologist"
+                   )
+
+
+visit_type_exc <- c("ALL INFUSION VISIT TYPES", #6
+                    "CHEMO AND THERAPIES", #12
+                    "PROCEDURE VISITS", #13
+                    "ADMINISTRATIVE TRACKING ONLY", #16
+                    "MSHS RIS MRI BREAST", #17
+                    "IMG WATER STUDIES", #18
+                    "COVID19", #8
+                    "BMT/CAR-T", #15
+                    "INFUSIONS LONGER THAN 5 HOURS" #7
+                    )
+
+
+visit_type_mapping <- visit_type_tbl %>%
+  left_join(visit_type_mapping_tbl %>%
+              dplyr::select(VISIT_TYPE_GRP_C, TITLE),
+            by = c("VISIT_TYPE_GROUP_C" = "VISIT_TYPE_GRP_C")) %>%
+  dplyr::select(PRC_ID, TITLE, VISIT_TYPE_GROUP_C) %>%
+  mutate(visit_type_exc = ifelse(VISIT_TYPE_GROUP_C %in% c(6,7,8,12,13,15,16,17,18), 1, 0)) %>%
+  group_by(PRC_ID) %>%
+  summarise(visit_type_exc = max(visit_type_exc)) 
+
+
+```
+
+
+```{r Online Appointments Physicians, echo = FALSE, warning = FALSE, message = FALSE}
+
+
+appt_online_physician <- access_raw_tbl %>%
+  left_join(clarity_ser_tbl %>% select(PROV_ID, PROV_TYPE)) %>%
+  left_join(visit_type_mapping) %>%
+
+  filter(!is.na(SITE)) %>%
+  filter(SITE %in% c("MSUS", "MSH- AMBULATORY CARE", "NETWORK", "MSW", "MSH-MSDFP",
+                     "MSDMG", "MSB", "MSM", "MSQ", "MSBI", "MSSN", "NYEE")) %>%
+  mutate(appt_year = year(CONTACT_DATE),
+         appt_month = month(CONTACT_DATE)) %>%
+  mutate(appt_made_year = year(APPT_MADE_DATE),
+         appt_made_month = month(APPT_MADE_DATE)) %>%
+  mutate(visit_type = ifelse(is.na(VISIT_GROUP_NUM), "ESTABLISHED", "NEW")) %>%
+  mutate(SPECIALTY_GRP = ifelse(DEPT_SPECIALTY_NAME %in%
+                                  c("Adolescent Medicine", "Community and Preventive Medicine",
+                                    "Family Medicine", "Internal Medicine", "Pediatrics", "Geriatrics", "Gerontology", "Urgent Care"), "Primary Care", "Specialty")) %>%
+
+  filter(year(APPT_MADE_DATE) >= prior_year) %>%
+  filter(APPT_MADE_DATE < TO_DATE(date_start, "YYYY-MM-DD HH24:MI:SS")) %>%
+
+  left_join(f_sched_appt_tbl %>%
+              dplyr::select(PAT_ENC_CSN_ID, COULD_DIR_SCHED_C, COULD_OPEN_SCHED_C, COULD_TKT_SCHED_C, APPT_SCHED_SOURCE_C, PAT_ONLINE_YN)) %>%
+  group_by(SITE, SPECIALTY_GRP, DEPT_SPECIALTY_NAME, DEPARTMENT_NAME, DEPARTMENT_ID, PROV_TYPE, PROV_NAME_WID, PROV_ID, appt_made_year, appt_made_month, 
+           VISIT_PROV_STAFF_RESOURCE_C, VISIT_METHOD, PRC_NAME, PRC_ID, 
+           COULD_DIR_SCHED_C, COULD_OPEN_SCHED_C, COULD_TKT_SCHED_C, APPT_SCHED_SOURCE_C, APPT_SCHED_SOURCE, DERIVED_STATUS_DESC, SCHED_METHOD, PAT_ONLINE_YN, WALK_IN_YN, visit_type_exc) %>%
+  summarise(total = n()) %>%
+  
+  filter(!is.na(COULD_DIR_SCHED_C) | !is.na(COULD_OPEN_SCHED_C) | !is.na(COULD_TKT_SCHED_C)) %>%
+  filter(!(COULD_DIR_SCHED_C %in% c(13) & COULD_OPEN_SCHED_C %in% c(13) & COULD_TKT_SCHED_C %in% c(13))) %>%
+  mutate(COULD_DIR_SCHED = ifelse(COULD_DIR_SCHED_C %in% c(11), 1, 0),
+         COULD_OPEN_SCHED = ifelse(COULD_OPEN_SCHED_C %in% c(11), 1, 0),
+         COULD_TKT_SCHED = ifelse(COULD_TKT_SCHED_C %in% c(11), 1, 0)) %>%
+  mutate(avail_online_exclude = ifelse(APPT_SCHED_SOURCE_C %in% c(27, 28, 33, 34), "Y", "N")) %>%
+  mutate(avail_online = ifelse((COULD_DIR_SCHED + COULD_OPEN_SCHED + COULD_TKT_SCHED)>0, "avail_Y", "avail_N")) %>%
+  mutate(sched_online = ifelse((avail_online == "avail_Y" & WALK_IN_YN == "N" & PAT_ONLINE_YN == "Y"), "sched_Y", "sched_N")) %>%
+  collect()
+
+
+appt_online_physician <- appt_online_physician %>%
+  mutate(prov_type_exc = ifelse(PROV_TYPE %in% prov_type_inc, 0, 
+                                ifelse((is.na(PROV_TYPE) | PROV_TYPE == "Resource") & str_detect(PROV_NAME_WID, "\\bPROVIDER\\b|\\bPHYSICIAN\\b|\\bMD\\b|\\bPA\\b"), 0, 1))) %>%
+  mutate(online_exclude_criteria = ifelse(sum(prov_type_exc, visit_type_exc, na.rm = T) >= 1, "EXC", "INC"))
+
+
+
+# appt_online_physician <- appt_online_physician %>%
+#   filter(!is.na(COULD_DIR_SCHED_C) | !is.na(COULD_OPEN_SCHED_C) | !is.na(COULD_TKT_SCHED_C)) %>%
+#   filter(!(COULD_DIR_SCHED_C %in% c(13) & COULD_OPEN_SCHED_C %in% c(13) & COULD_TKT_SCHED_C %in% c(13))) %>%
+#   mutate(COULD_DIR_SCHED = ifelse(COULD_DIR_SCHED_C %in% c(11), 1, 0),
+#          COULD_OPEN_SCHED = ifelse(COULD_OPEN_SCHED_C %in% c(11), 1, 0),
+#          COULD_TKT_SCHED = ifelse(COULD_TKT_SCHED_C %in% c(11), 1, 0)) %>%
+#   mutate(avail_online_exclude = ifelse(APPT_SCHED_SOURCE_C %in% c(27, 28, 33, 34), "Y", "N")) %>%
+#   mutate(avail_online = ifelse((COULD_DIR_SCHED + COULD_OPEN_SCHED + COULD_TKT_SCHED)>0, "avail_Y", "avail_N")) %>%
+#   mutate(sched_online = ifelse((avail_online == "avail_Y" & WALK_IN_YN == "N" & PAT_ONLINE_YN == "Y"), "sched_Y", "sched_N"))
+
+
+
+appt_online_physician_summary <- appt_online_physician %>%
+  filter(avail_online_exclude == "N") %>%
+  group_by(SITE, SPECIALTY_GRP, DEPT_SPECIALTY_NAME, DEPARTMENT_NAME, DEPARTMENT_ID, PROV_TYPE, PROV_NAME_WID, PROV_ID, appt_made_year, appt_made_month,
+           avail_online, sched_online, online_exclude_criteria) %>%
+  summarise(appts_sched = sum(total, na.rm = T)) %>%
+  pivot_wider(names_from = c("online_exclude_criteria", "avail_online", "sched_online"),
+              values_from = appts_sched,
+              values_fill = 0) %>%
+  mutate(perc_avail_online_all = (EXC_avail_Y_sched_N + EXC_avail_Y_sched_Y + INC_avail_Y_sched_N + INC_avail_Y_sched_Y) / 
+           (EXC_avail_N_sched_N + EXC_avail_Y_sched_N + EXC_avail_Y_sched_Y + INC_avail_N_sched_N + INC_avail_Y_sched_N + INC_avail_Y_sched_Y),
+         perc_sched_online_all = (EXC_avail_Y_sched_Y + INC_avail_Y_sched_Y) / 
+           (EXC_avail_N_sched_N + EXC_avail_Y_sched_N + EXC_avail_Y_sched_Y + INC_avail_N_sched_N + INC_avail_Y_sched_N + INC_avail_Y_sched_Y),
+         perc_avail_online_inScope = (INC_avail_Y_sched_N + INC_avail_Y_sched_Y) / (INC_avail_N_sched_N + INC_avail_Y_sched_N + INC_avail_Y_sched_Y),
+         perc_sched_online_inScope = (INC_avail_Y_sched_Y) / (INC_avail_N_sched_N + INC_avail_Y_sched_N + INC_avail_Y_sched_Y)) %>%
+         # perc_sched_online = (avail_Y_sched_Y) / (avail_Y_sched_Y + avail_Y_sched_N)) %>%
+  rename("Year" = appt_made_year,
+         "Month" = appt_made_month)
+
+
+
+```
+
+
+```{r Online Scheduling Audit Data Pull, echo = FALSE, warning = FALSE, message = FALSE}
+
+# appt_avail_online_physician_summary <- appt_online_physician %>%
+#   filter(avail_online_exclude == "N") %>%
+#   group_by(SITE, DEPT_SPECIALTY_NAME, DEPARTMENT_NAME, DEPARTMENT_ID, PROV_TYPE, VISIT_PROV_STAFF_RESOURCE_C, PROV_NAME_WID, PRC_NAME, PRC_ID, VISIT_METHOD, VISIT_TYPE, 
+#            avail_online_exclude, appt_made_year, appt_made_month, avail_online, sched_online) %>%
+#   summarise(appts_sched = sum(total, na.rm = T))  %>%
+#   pivot_wider(names_from = c("avail_online", "sched_online"),
+#               values_from = appts_sched,
+#               values_fill = 0) %>%
+#   mutate(perc_avail_online = (avail_Y_sched_N + avail_Y_sched_Y) / (avail_N_sched_N + avail_Y_sched_N + avail_Y_sched_Y),
+#          perc_sched_online = (avail_Y_sched_Y) / (avail_N_sched_N + avail_Y_sched_N + avail_Y_sched_Y)) %>%
+#          # perc_sched_online = (avail_Y_sched_Y) / (avail_Y_sched_Y + avail_Y_sched_N)) %>%
+#   rename("Year" = appt_made_year,
+#          "Month" = appt_made_month)
+# 
+# appt_avail_online_physician_summary <- appt_avail_online_physician_summary %>%
+#   left_join(visit_type_clean)
+# 
+# 
+# 
+# 
+# prov_type_summary <- access_raw_tbl %>%
+#   left_join(clarity_ser_tbl %>% select(PROV_ID, PROV_TYPE)) %>%
+#   # filter(PROV_TYPE == "Physician") %>%
+# 
+#   filter(!is.na(SITE)) %>%
+#   filter(SITE %in% c("MSUS", "MSH- AMBULATORY CARE", "NETWORK", "MSW", "MSH-MSDFP",
+#                      "MSDMG", "MSB", "MSM", "MSQ", "MSBI", "MSSN", "NYEE")) %>%
+#   mutate(lead_days = CONTACT_DATE - APPT_MADE_DATE) %>%
+#   mutate(cancel_lead_days = CONTACT_DATE - APPT_CANC_DATE) %>%
+#   # mutate(lead_days =  as.numeric(difftime(as.Date(APPT_MADE_DATE), as.Date(CONTACT_DATE), units = "days"))) %>%
+#   mutate(appt_status = ifelse(DERIVED_STATUS_DESC == "Canceled" & cancel_lead_days <=0, "SameDay_Canceled", DERIVED_STATUS_DESC)) %>%
+#   mutate(appt_year = year(CONTACT_DATE),
+#          appt_month = month(CONTACT_DATE)) %>%
+#   mutate(appt_made_year = year(APPT_MADE_DATE),
+#          appt_made_month = month(APPT_MADE_DATE)) %>%
+#   mutate(visit_type = ifelse(is.na(VISIT_GROUP_NUM), "ESTABLISHED", "NEW")) %>%
+#   mutate(lead_14days = ifelse(lead_days <= 14, "lead_14days", "lead_14days_more")) %>%
+#   mutate(SPECIALTY_GRP = ifelse(DEPT_SPECIALTY_NAME %in%
+#                                   c("Adolescent Medicine", "Community and Preventive Medicine",
+#                                     "Family Medicine", "Internal Medicine", "Pediatrics", "Geriatrics", "Gerontology", "Urgent Care"), "Primary Care", "Specialty")) %>%
+# 
+#   filter(year(APPT_MADE_DATE) >= prior_year) %>%
+#   filter(APPT_MADE_DATE < TO_DATE(date_start, "YYYY-MM-DD HH24:MI:SS")) %>%
+#   left_join(f_sched_appt_tbl %>%
+#               dplyr::select(PAT_ENC_CSN_ID, COULD_DIR_SCHED_C, COULD_OPEN_SCHED_C, COULD_TKT_SCHED_C, APPT_SCHED_SOURCE_C, PAT_ONLINE_YN)) %>%
+#   group_by(SITE, SPECIALTY_GRP, DEPT_SPECIALTY_NAME, DEPARTMENT_NAME, DEPARTMENT_ID,
+#            VISIT_PROV_STAFF_RESOURCE_C, PROV_TYPE, VISIT_METHOD, PRC_NAME, PRC_ID,
+#            PROV_NAME_WID) %>%
+#   summarise(total = n()) %>%
+#   collect()
+# 
+# 
+# 
+# require(openxlsx)
+# write.xlsx(appt_avail_online_physician_summary, "Online Appts Audit_052025.xlsx")
+# write.xlsx(appt_avail_online_physician_summary, "Online Appts Audit_Prov Type_052025.xlsx")
+
+
+
+```
+
+# OMS Digital Metrics {.tabset .tabset-fade .tabset-pills}
+*Report run date: `r report_run_date`*<br/>
+______________________________________________________________________________________________________________________________
+<br/>
+<br/>
+
+## Metrics by Provider
+```{r Digital KPI Output Output, echo = FALSE, warning = FALSE, message = FALSE}
+
+
+htmltools::browsable(
+  tagList(
+    tags$button(
+      tagList(fontawesome::fa("download"), "Download Table"),
+      onclick = "Reactable.downloadDataCSV('digital-metrics', 'Online Scheduling by Provider')"
+    ),
+
+# htmltools::browsable(
+#   tagList(
+#     div(tags$label("Summary by", `for` = "access-metrics")),
+#     tags$select(
+#       id = "new-pt-waitTime",
+#       onchange = "Reactable.setGroupBy('access-metrics', this.value ? [this.value] : [])",
+#       tags$option("None", value = ""),
+#       lapply(c("Year", "Year-Month", "SITE", "Specialty Type", "Specialty"), tags$option)
+#     ),
+# 
+#     tags$hr("aria-hidden" = "true"),
+    
+reactable(
+  appt_online_physician_summary, 
+  elementId = "digital-metrics",
+  # elementId = "referral-vol-download-table",
+  style = list(fontFamily = 'Calibri',
+                 fontSize = '14px'),
+    defaultColDef = colDef(align = "left",
+                           headerStyle = list(fontWeight = "Bold", fontSize = "14px"),
+                           headerClass = "bar-sort-header"),
+  # RowStyle = function(index) {
+  #           if (index %in% c(nrow(referral_vol_site_data_mshs))) {
+  #             list(`border-top` = "2px solid rgb(184,184,184)",
+  #                  fontWeight = "Bold")
+  #           }
+  #         },
+    highlight = TRUE,
+    # filterable = TRUE,
+    pagination = FALSE,
+    # height = 800,
+    wrap = TRUE,
+  searchable = TRUE,
+
+  groupBy = c("Year", "Month", "SITE", "SPECIALTY_GRP", "DEPT_SPECIALTY_NAME", "DEPARTMENT_NAME"),
+
+  columnGroups = list(
+    colGroup(name = "", columns = c("Year", "Month", "SITE", "SPECIALTY_GRP", "DEPT_SPECIALTY_NAME", "DEPARTMENT_NAME", "PROV_TYPE", "PROV_NAME_WID"),
+             headerStyle = list(color = "black", fontSize = "15px"),
+             sticky = "left"),
+    colGroup(name = paste0("All Visits"),
+             columns = c("perc_avail_online_all", "perc_sched_online_all"),
+             headerStyle = list(background = "#212070", color = "white", fontSize = "15px")),
+    colGroup(name = paste0("Visits in Scope"),
+             columns = c("perc_avail_online_inScope", "perc_sched_online_inScope"),
+             headerStyle = list(background = "#d80b8c", color = "white", fontSize = "15px"))
+    ),
+
+  columns = list(
+
+    Year = colDef(
+      maxWidth = 100),
+
+    `Month` = colDef(
+      maxWidth = 100),
+
+    SITE = colDef(
+      # footer = "Total",
+      name = "Site",
+      maxWidth = 150),
+    
+    SPECIALTY_GRP = colDef(
+      name = "Specialty Type*",
+      maxWidth = 150),
+
+    DEPT_SPECIALTY_NAME = colDef(
+      name = "Specialty",
+      maxWidth = 230),
+
+    DEPARTMENT_NAME = colDef(
+      name = "Department",
+      maxWidth = 230),
+    
+    PROV_TYPE = colDef(
+      name = "Provider Type",
+      maxWidth = 230),
+    
+    PROV_NAME_WID = colDef(
+      name = "Provider",
+      maxWidth = 230),
+
+    perc_avail_online_all = colDef(
+      name = "% Available Online",
+      aggregate = JS("function(values, rows) {
+        let totalEXC_avail_Y_sched_N = 0
+        let totalEXC_avail_Y_sched_Y = 0
+        let totalEXC_avail_N_sched_N = 0
+        let totalINC_avail_Y_sched_N = 0
+        let totalINC_avail_Y_sched_Y = 0
+        let totalINC_avail_N_sched_N = 0
+        rows.forEach(function(row) {
+          totalEXC_avail_Y_sched_N += row['EXC_avail_Y_sched_N']
+          totalEXC_avail_Y_sched_Y += row['EXC_avail_Y_sched_Y']
+          totalEXC_avail_N_sched_N += row['EXC_avail_N_sched_N']
+          totalINC_avail_Y_sched_N += row['INC_avail_Y_sched_N']
+          totalINC_avail_Y_sched_Y += row['INC_avail_Y_sched_Y']
+          totalINC_avail_N_sched_N += row['INC_avail_N_sched_N']
+        })
+        return (totalEXC_avail_Y_sched_N + totalEXC_avail_Y_sched_Y + totalINC_avail_Y_sched_N + totalINC_avail_Y_sched_Y) / 
+           (totalEXC_avail_N_sched_N + totalEXC_avail_Y_sched_N + totalEXC_avail_Y_sched_Y + totalINC_avail_N_sched_N + totalINC_avail_Y_sched_N + totalINC_avail_Y_sched_Y) || '-'
+      }"),
+      maxWidth = 100,
+      headerStyle = list(background = "#212070", color = "white", fontWeight = "Bold", fontSize = "14px"),
+      format = colFormat(percent = TRUE, digits = 1)
+      ),
+
+    perc_sched_online_all = colDef(
+      name = "% Scheduled Online",
+      maxWidth = 100,
+      headerStyle = list(background = "#212070", color = "white", fontWeight = "Bold", fontSize = "14px"),
+      # Calculate the aggregate conversion rate as `(total-pending) / total`
+      aggregate = JS("function(values, rows) {
+        let totalEXC_avail_Y_sched_N = 0
+        let totalEXC_avail_Y_sched_Y = 0
+        let totalEXC_avail_N_sched_N = 0
+        let totalINC_avail_Y_sched_N = 0
+        let totalINC_avail_Y_sched_Y = 0
+        let totalINC_avail_N_sched_N = 0
+        rows.forEach(function(row) {
+          totalEXC_avail_Y_sched_N += row['EXC_avail_Y_sched_N']
+          totalEXC_avail_Y_sched_Y += row['EXC_avail_Y_sched_Y']
+          totalEXC_avail_N_sched_N += row['EXC_avail_N_sched_N']
+          totalINC_avail_Y_sched_N += row['INC_avail_Y_sched_N']
+          totalINC_avail_Y_sched_Y += row['INC_avail_Y_sched_Y']
+          totalINC_avail_N_sched_N += row['INC_avail_N_sched_N']
+        })
+        return (totalEXC_avail_Y_sched_Y + totalINC_avail_Y_sched_Y) / 
+           (totalEXC_avail_N_sched_N + totalEXC_avail_Y_sched_N + totalEXC_avail_Y_sched_Y + totalINC_avail_N_sched_N + totalINC_avail_Y_sched_N + totalINC_avail_Y_sched_Y) || '-'
+      }"),
+      format = colFormat(percent = TRUE, digits = 1)
+    ),
+
+    perc_avail_online_inScope = colDef(
+      name = "% Available Online",
+      aggregate = JS("function(values, rows) {
+        let totalINC_avail_Y_sched_N = 0
+        let totalINC_avail_Y_sched_Y = 0
+        let totalINC_avail_N_sched_N = 0
+        rows.forEach(function(row) {
+          totalINC_avail_Y_sched_N += row['INC_avail_Y_sched_N']
+          totalINC_avail_Y_sched_Y += row['INC_avail_Y_sched_Y']
+          totalINC_avail_N_sched_N += row['INC_avail_N_sched_N']
+        })
+        return (totalINC_avail_Y_sched_N + totalINC_avail_Y_sched_Y) / 
+           (totalINC_avail_N_sched_N + totalINC_avail_Y_sched_N + totalINC_avail_Y_sched_Y) || '-'
+      }"),
+      maxWidth = 100,
+      headerStyle = list(background = "#d80b8c", color = "white", fontWeight = "Bold", fontSize = "14px"),
+      format = colFormat(percent = TRUE, digits = 1)
+      ),
+
+    perc_sched_online_inScope = colDef(
+      name = "% Scheduled Online",
+      maxWidth = 100,
+      headerStyle = list(background = "#d80b8c", color = "white", fontWeight = "Bold", fontSize = "14px"),
+      # Calculate the aggregate conversion rate as `(total-pending) / total`
+      aggregate = JS("function(values, rows) {
+        let totalINC_avail_Y_sched_N = 0
+        let totalINC_avail_Y_sched_Y = 0
+        let totalINC_avail_N_sched_N = 0
+        rows.forEach(function(row) {
+          totalINC_avail_Y_sched_N += row['INC_avail_Y_sched_N']
+          totalINC_avail_Y_sched_Y += row['INC_avail_Y_sched_Y']
+          totalINC_avail_N_sched_N += row['INC_avail_N_sched_N']
+        })
+        return (totalINC_avail_Y_sched_Y) / 
+           (totalINC_avail_N_sched_N + totalINC_avail_Y_sched_N + totalINC_avail_Y_sched_Y) || '-'
+      }"),
+      format = colFormat(percent = TRUE, digits = 1)
+    ),
+
+    DEPARTMENT_ID = colDef(show =F),
+    PROV_ID = colDef(show =F),
+    EXC_avail_N_sched_N = colDef(show =F),
+    EXC_avail_Y_sched_N = colDef(show =F),
+    EXC_avail_Y_sched_Y = colDef(show =F),
+    INC_avail_N_sched_N = colDef(show =F),
+    INC_avail_Y_sched_N= colDef(show =F),
+    INC_avail_Y_sched_Y = colDef(show =F)
+    
+
+  ) # Close Columns
+
+  ) # Close Reactable
+) # Close Taglist
+) # Close htmltools
+
+```
+<br/>
+<p style="font-size:10pt; font-style:italic">*New Patient is defined by level of service; New Patient Ratio is calculated based on (Total New Patients Arrived) / (Total Patients Arrived)<p/>
+<p style="font-size:10pt; font-style:italic">*Primary Care includes Adolescent Medicine, Community and Preventative Medicine, Internal Medicine, Family Medicine, Pediatrics, Geriatrics, Urgent Care<p/>
+
+<br/>
+<br/>
+
