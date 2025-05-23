@@ -626,7 +626,7 @@ ________________________________________________________________________________
 <br/>
 
 ## Metrics by Provider
-```{r Digital KPI Output Output, echo = FALSE, warning = FALSE, message = FALSE}
+```{r Digital KPI by Criteria Output Output, echo = FALSE, warning = FALSE, message = FALSE}
 
 
 htmltools::browsable(
