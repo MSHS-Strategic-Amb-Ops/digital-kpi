@@ -1134,7 +1134,7 @@ reactable(
 
 
 ## `r current_year`-`r current_month` Metrics by Specialty
-```{r Current Month Metrics by Site, echo = FALSE, warning = FALSE, message = FALSE}
+```{r Current Month Metrics by Specialty, echo = FALSE, warning = FALSE, message = FALSE}
 
 
 # htmltools::browsable(
