@@ -733,7 +733,7 @@ ________________________________________________________________________________
 <br/>
 
 ## `r current_year`-`r current_month` Metrics 
-```{r Digital KPI by Criteria Output Output, echo = FALSE, warning = FALSE, message = FALSE}
+```{r Digital KPI by Criteria Output Current Month, echo = FALSE, warning = FALSE, message = FALSE}
 
 
 htmltools::browsable(
@@ -1138,7 +1138,7 @@ reactable(
 
 
 ## Metrics by Provider
-```{r Digital KPI by Criteria Output Output, echo = FALSE, warning = FALSE, message = FALSE}
+```{r Digital KPI by Criteria Output, echo = FALSE, warning = FALSE, message = FALSE}
 
 
 htmltools::browsable(
