@@ -754,7 +754,7 @@ reactable(
   appt_online_physician_summary_status %>%
     filter(Year == current_year) %>%
     filter(Month == current_month) %>%
-    dplyr::select(-c(Year, Month)) %>%
+    dplyr::select(-c(Year, Month, SPECIALTY_GRP)) %>%
     mutate(Total = "Total"), 
   elementId = "digital-metrics-site",
   style = list(fontFamily = 'Calibri',
@@ -775,7 +775,7 @@ reactable(
     wrap = TRUE,
   searchable = TRUE,
 
-  groupBy = c("Total", "SITE", "DEPT_SPECIALTY_NAME", "DEPARTMENT_NAME", "PROV_TYPE"),
+  groupBy = c("Total", "SITE", "DEPT_SPECIALTY_NAME", "DEPARTMENT_NAME", "PROV_TYPE", "PROV_NAME_WID"),
 
   columnGroups = list(
     colGroup(name = "", columns = c("Total", "SITE", "DEPT_SPECIALTY_NAME", "DEPARTMENT_NAME", "PROV_TYPE", "PROV_NAME_WID"),
@@ -808,9 +808,9 @@ reactable(
       name = "Site",
       minWidth = 250),
     
-    SPECIALTY_GRP = colDef(
-      name = "Specialty Type*",
-      maxWidth = 150),
+    # SPECIALTY_GRP = colDef(
+    #   name = "Specialty Type*",
+    #   maxWidth = 150),
 
     DEPT_SPECIALTY_NAME = colDef(
       name = "Specialty",
@@ -1114,7 +1114,7 @@ reactable(
     
     DEPARTMENT_ID = colDef(show =F),
     PROV_ID = colDef(show =F),
-    SPECIALTY_GRP = colDef(show =F),
+    # SPECIALTY_GRP = colDef(show =F),
     EXC_avail_N_sched_N = colDef(show =F),
     EXC_avail_Y_sched_N = colDef(show =F),
     EXC_avail_Y_sched_Y = colDef(show =F),
@@ -1160,7 +1160,7 @@ reactable(
   appt_online_physician_summary_status %>%
     filter(Year == current_year) %>%
     filter(Month == current_month) %>%
-    dplyr::select(-c(Year, Month)) %>%
+    dplyr::select(-c(Year, Month, SPECIALTY_GRP)) %>%
     mutate(Total = "Total"), 
   elementId = "digital-metrics-specialty",
   # elementId = "referral-vol-download-table",
@@ -1182,7 +1182,7 @@ reactable(
     wrap = TRUE,
   searchable = TRUE,
 
-  groupBy = c("Total", "DEPT_SPECIALTY_NAME", "SITE", "DEPARTMENT_NAME", "PROV_TYPE"),
+  groupBy = c("Total", "DEPT_SPECIALTY_NAME", "SITE", "DEPARTMENT_NAME", "PROV_TYPE", "PROV_NAME_WID"),
 
   columnGroups = list(
     colGroup(name = "", columns = c("Total", "DEPT_SPECIALTY_NAME", "SITE", "DEPARTMENT_NAME", "PROV_TYPE", "PROV_NAME_WID"),
@@ -1517,7 +1517,6 @@ reactable(
     
     DEPARTMENT_ID = colDef(show =F),
     PROV_ID = colDef(show =F),
-    SPECIALTY_GRP = colDef(show =F),
     EXC_avail_N_sched_N = colDef(show =F),
     EXC_avail_Y_sched_N = colDef(show =F),
     EXC_avail_Y_sched_Y = colDef(show =F),
@@ -1620,11 +1619,11 @@ reactable(
 
     DEPT_SPECIALTY_NAME = colDef(
       name = "Specialty",
-      maxWidth = 230),
+      minWidth = 200),
 
     DEPARTMENT_NAME = colDef(
       name = "Department",
-      maxWidth = 230),
+      minWidth = 200),
     
     PROV_TYPE = colDef(
       name = "Provider Type",
@@ -1632,7 +1631,7 @@ reactable(
     
     PROV_NAME_WID = colDef(
       name = "Provider",
-      maxWidth = 230),
+      minWidth = 200),
     
     # PROV_COUNT = colDef(
     #   name = "Total Physicians (By DEP)",
