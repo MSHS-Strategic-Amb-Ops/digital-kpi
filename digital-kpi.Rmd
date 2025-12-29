@@ -721,7 +721,7 @@ appt_online_criteria_summary <- appt_online_physician %>%
 
 ```
 
-# OMS Digital KPIs - % Available/Scheduled Online {.tabset .tabset-fade .tabset-pills}
+# OMS Digital KPIs: Online Availability and Scheduling {.tabset .tabset-fade .tabset-pills}
 *Report run date: `r report_run_date`*<br/>
 ______________________________________________________________________________________________________________________________
 <br/>
