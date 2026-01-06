@@ -2804,11 +2804,10 @@ reactable(
 ## All: Metrics by In Scope Criteria
 <br/>
 <br/>
-<p style="font-size:14pt; font-weight:bold">Visits In Scope:<br/>
+<p style="font-size:14pt; font-weight:bold">Visits In Scope:<br/><p/>
 <p style="font-size:14pt; font-style:italic">
 - Included Provider Types: `r prov_type_inc`<br/><br/>
 - Excluded Visit Types: `r visit_type_exc`<br/>
-<p/>
 <p/>
 <br/>
 ```{r Metrics by In Scope Criteria, echo = FALSE, warning = FALSE, message = FALSE}
