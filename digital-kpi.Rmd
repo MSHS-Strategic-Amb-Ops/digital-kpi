@@ -840,7 +840,7 @@ reactable(
 
     DEPT_SPECIALTY_NAME = colDef(
       name = "Specialty",
-      minWidth = 250),
+      minWidth = 300),
 
     DEPARTMENT_NAME = colDef(
       name = "Department",
@@ -1654,7 +1654,7 @@ reactable(
     SITE = colDef(
       # footer = "Total",
       name = "Site",
-      minWidth = 250),
+      minWidth = 1800),
     
     # SPECIALTY_GRP = colDef(
     #   name = "Specialty Type*",
@@ -1666,7 +1666,7 @@ reactable(
 
     DEPARTMENT_NAME = colDef(
       name = "Department",
-      minWidth = 250),
+      minWidth = 300),
     
     PROV_TYPE = colDef(
       name = "Provider Type",
@@ -2065,7 +2065,7 @@ reactable(
     SITE = colDef(
       # footer = "Total",
       name = "Site",
-      minWidth = 250),
+      minWidth = 180),
     
     # SPECIALTY_GRP = colDef(
     #   name = "Specialty Type*",
@@ -2077,7 +2077,7 @@ reactable(
 
     DEPARTMENT_NAME = colDef(
       name = "Department",
-      minWidth = 250),
+      minWidth = 350),
     
     PROV_TYPE = colDef(
       name = "Provider Type",
