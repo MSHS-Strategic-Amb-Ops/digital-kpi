@@ -752,7 +752,7 @@ ________________________________________________________________________________
 <br/>
 <br/>
 
-## MSH, MSW/M, Downtown: `r prior_month_label` Metrics by Site: All
+## MSH, MSW/M, Downtown: `r prior_month_label` 
 ```{r Prior Month Metrics - MSH, MSW/M, Downtown, echo = FALSE, warning = FALSE, message = FALSE}
 
 # 
@@ -1163,7 +1163,7 @@ reactable(
 <br/>
 
 
-## MSH-AMB CARE: `r prior_month_label` Metrics by Site: All
+## MSH-AMB CARE: `r prior_month_label`
 ```{r Prior Month Metrics - MSH-AMB CARE, echo = FALSE, warning = FALSE, message = FALSE}
 
 # 
@@ -1574,7 +1574,7 @@ reactable(
 <br/>
 
 
-## MSDMG: `r prior_month_label` Metrics by Site: All
+## MSDMG: `r prior_month_label`
 ```{r Prior Month Metrics - MSDMG, echo = FALSE, warning = FALSE, message = FALSE}
 
 # 
@@ -1985,7 +1985,7 @@ reactable(
 <br/>
 
 
-## Network: `r prior_month_label` Metrics by Site: All
+## Network: `r prior_month_label`
 ```{r Prior Month Metrics - Network, echo = FALSE, warning = FALSE, message = FALSE}
 
 # 
@@ -2395,7 +2395,7 @@ reactable(
 <p style="font-size:10pt; font-style:italic">% Captured Online: Calculates the percentage of online available appointments that were successfully scheduled through online means.<p/>
 <br/>
 
-## Metrics by Provider
+## All: Metrics by Provider
 ```{r Metrics by Provider, echo = FALSE, warning = FALSE, message = FALSE}
 
 
@@ -2801,7 +2801,7 @@ reactable(
 <br/>
 
 
-## Metrics by In Scope Criteria
+## All: Metrics by In Scope Criteria
 <br/>
 <br/>
 <p style="font-size:14pt; font-weight:bold">Visits In Scope:<br/>
