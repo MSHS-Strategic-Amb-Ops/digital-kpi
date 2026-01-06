@@ -1654,7 +1654,7 @@ reactable(
     SITE = colDef(
       # footer = "Total",
       name = "Site",
-      minWidth = 1800),
+      minWidth = 180),
     
     # SPECIALTY_GRP = colDef(
     #   name = "Specialty Type*",
