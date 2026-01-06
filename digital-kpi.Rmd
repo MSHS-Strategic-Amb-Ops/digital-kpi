@@ -2803,6 +2803,7 @@ reactable(
 
 ## Metrics by In Scope Criteria
 <br/>
+<br/>
 <p style="font-size:14pt; font-weight:bold">Visits In Scope:<br/>
 <p style="font-size:14pt; font-style:italic">
 - Included Provider Types: `r prov_type_inc`<br/><br/>
