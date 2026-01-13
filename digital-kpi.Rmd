@@ -485,6 +485,9 @@ visit_type_mapping <- visit_type_tbl %>%
 
 
 digital_status <- access_raw_tbl %>%
+  left_join(tbl(conn2, "CLARITY_SER_DEPT") %>%
+              dplyr::select(PROV_ID, DEPARTMENT_ID, INACT_CAD_DEPT_YN)) %>%
+  filter(is.na(INACT_CAD_DEPT_YN) | INACT_CAD_DEPT_YN == "N") %>%
   left_join(tbl(conn2, "CLARITY_DEP_MYC") %>%
                   dplyr::select(DEPARTMENT_ID, 
                                 OPN_SCHED_ALLOW_YN, # DEP Open Scheduling YN 
