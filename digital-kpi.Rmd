@@ -782,7 +782,7 @@ reactable(
   appt_online_physician_summary_status %>%
     filter(SITE %!in% c("MSH- AMBULATORY CARE", "MSDMG", "NETWORK")) %>%
     filter(Year == format(prior_month, "%Y")) %>%
-    filter(Month == format(prior_month, "%m")) %>%
+    filter(Month == as.numeric(format(prior_month, "%m"))) %>%
     dplyr::select(-c(Year, Month, SPECIALTY_GRP)) %>%
     arrange(DEPT_SPECIALTY_NAME, SITE, DEPARTMENT_NAME, PROV_NAME_WID),
   # elementId = "digital-metrics-site",
@@ -1192,8 +1192,8 @@ reactable(
 reactable(
   appt_online_physician_summary_status %>%
     filter(SITE == "MSH- AMBULATORY CARE") %>%
-    filter(Year == format(prior_month, "%Y")) %>%
-    filter(Month == format(prior_month, "%m")) %>%
+    filter(Year == as.numeric(format(prior_month, "%Y"))) %>%
+    filter(Month == as.numeric(format(prior_month, "%m"))) %>%
     dplyr::select(-c(Year, Month, SPECIALTY_GRP)) %>%
     arrange(SITE, DEPT_SPECIALTY_NAME, DEPARTMENT_NAME, PROV_NAME_WID),
   # elementId = "digital-metrics-site",
@@ -1603,8 +1603,8 @@ reactable(
 reactable(
   appt_online_physician_summary_status %>%
     filter(SITE == "MSDMG") %>%
-    filter(Year == format(prior_month, "%Y")) %>%
-    filter(Month == format(prior_month, "%m")) %>%
+    filter(Year == as.numeric(format(prior_month, "%Y"))) %>%
+    filter(Month == as.numeric(format(prior_month, "%m"))) %>%
     dplyr::select(-c(Year, Month, SPECIALTY_GRP, DEPT_SPECIALTY_NAME)) %>%
     arrange(SITE, DEPARTMENT_NAME, PROV_NAME_WID),
   # elementId = "digital-metrics-site",
@@ -2014,7 +2014,8 @@ reactable(
 reactable(
   appt_online_physician_summary_status %>%
     filter(SITE == "NETWORK") %>%
-    filter(Year == format(prior_month, "%Y")) %>%
+    filter(Year == as.numeric(format(prior_month, "%Y"))) %>%
+    filter(Month == as.numeric(format(prior_month, "%m"))) %>%
     filter(Month == format(prior_month, "%m")) %>%
     dplyr::select(-c(Year, Month, SPECIALTY_GRP, DEPT_SPECIALTY_NAME)) %>%
     arrange(SITE, DEPARTMENT_NAME, PROV_NAME_WID),
@@ -2423,8 +2424,8 @@ htmltools::browsable(
     
 reactable(
   appt_online_physician_summary_status %>%
-    filter(Year == format(prior_month, "%Y")) %>%
-    filter(Month == format(prior_month, "%m")) %>%
+    filter(Year == as.numeric(format(prior_month, "%Y"))) %>%
+    filter(Month == as.numeric(format(prior_month, "%m"))) %>%
     dplyr::select(-c(Year, Month, SPECIALTY_GRP)) %>%
     mutate(Total = "Total") %>%
     arrange(SITE, DEPT_SPECIALTY_NAME, DEPARTMENT_NAME, PROV_NAME_WID),
