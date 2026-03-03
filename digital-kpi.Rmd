@@ -2016,7 +2016,6 @@ reactable(
     filter(SITE == "NETWORK") %>%
     filter(Year == as.numeric(format(prior_month, "%Y"))) %>%
     filter(Month == as.numeric(format(prior_month, "%m"))) %>%
-    filter(Month == format(prior_month, "%m")) %>%
     dplyr::select(-c(Year, Month, SPECIALTY_GRP, DEPT_SPECIALTY_NAME)) %>%
     arrange(SITE, DEPARTMENT_NAME, PROV_NAME_WID),
   # elementId = "digital-metrics-site",
