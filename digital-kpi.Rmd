@@ -664,6 +664,11 @@ appt_online_physician_summary_commercial <- appt_online_physician %>%
 
 appt_online_physician_summary_merged <- left_join(appt_online_physician_summary, appt_online_physician_summary_commercial)
 
+location <- tbl(conn1, "EPIC_DEPT_LOCATION_MAPPING") %>% collect()
+
+appt_online_physician_summary_merged <- appt_online_physician_summary_merged %>%
+  left_join(location %>% dplyr::select(STANDARD_ADDRESS, DEPARTMENT_ID))
+
 
 
 appt_online_physician_summary_status <- appt_online_physician_summary %>%
@@ -3237,7 +3242,8 @@ reactable(
     INC_avail_Y_sched_N_COMMERCIAL_MANAGED_CARE = colDef(show =F),
     INC_avail_Y_sched_Y_COMMERCIAL_MANAGED_CARE = colDef(show =F),
     EXC_avail_Y_sched_N_COMMERCIAL_MANAGED_CARE = colDef(show =F),
-    EXC_avail_Y_sched_Y_COMMERCIAL_MANAGED_CARE = colDef(show =F)
+    EXC_avail_Y_sched_Y_COMMERCIAL_MANAGED_CARE = colDef(show =F),
+    STANDARD_ADDRESS = colDef(show =F)
 
   ) # Close Columns
 
