@@ -543,10 +543,26 @@ digital_status <- access_raw_tbl %>%
 
 ```{r Online Appointments Physicians, echo = FALSE, warning = FALSE, message = FALSE}
 
+finclass_tbl <- tbl(conn2, "V_PB_EPP_CUSTOM_PRD_TYPE")
+
 appt_online_physician <- access_raw_tbl %>%
   left_join(clarity_ser_tbl %>% select(PROV_ID, PROV_TYPE, ACTIVE_STATUS)) %>%
   left_join(visit_type_mapping) %>%
   
+  left_join(finclass_tbl %>% 
+              filter(PRD_TYPE == "EXCHANGE") %>%
+              dplyr::select(PLAN_NAME, PRD_TYPE) %>%
+              distinct(), 
+            by = c("VISITPLAN" = "PLAN_NAME")) %>%
+  mutate(FINCLASS = case_when(PRD_TYPE == "EXCHANGE" ~ "EXCHANGE", TRUE ~ FINCLASS)) %>%
+  mutate(FINCLASS = case_when(FINCLASS %in% c("EXCHANGE") ~ "EXCHANGE",
+                              FINCLASS %in% c("Commercial/Managed Care") ~ "COMMERCIAL_MANAGED_CARE",
+                              FINCLASS %in% c("Medicaid Managed Care") ~ "MCD_HMO",
+                              FINCLASS %in% c("Medicare Managed Care") ~ "MCR_HMO",
+                              FINCLASS %in% c("Medicaid MS") ~ "MCD",
+                              FINCLASS %in% c("Medicare MS") ~ "MCR",
+                              TRUE ~ "OTHER"
+                              )) %>%
 
   filter(!is.na(SITE)) %>%
   filter(SITE %in% c("MSUS", "MSH- AMBULATORY CARE", "NETWORK", "MSW", "MSH-MSDFP",
@@ -566,7 +582,7 @@ appt_online_physician <- access_raw_tbl %>%
   left_join(f_sched_appt_tbl %>%
               dplyr::select(PAT_ENC_CSN_ID, COULD_DIR_SCHED_C, COULD_OPEN_SCHED_C, COULD_TKT_SCHED_C, APPT_SCHED_SOURCE_C, PAT_ONLINE_YN)) %>%
   group_by(SITE, SPECIALTY_GRP, DEPT_SPECIALTY_NAME, DEPARTMENT_NAME, DEPARTMENT_ID, PROV_TYPE, PROV_NAME_WID, PROV_ID, ACTIVE_STATUS, appt_made_year, appt_made_month, 
-           VISIT_PROV_STAFF_RESOURCE_C, VISIT_METHOD, PRC_NAME, PRC_ID, 
+           VISIT_PROV_STAFF_RESOURCE_C, VISIT_METHOD, visit_type, PRC_NAME, PRC_ID, FINCLASS,
            COULD_DIR_SCHED_C, COULD_OPEN_SCHED_C, COULD_TKT_SCHED_C, APPT_SCHED_SOURCE_C, APPT_SCHED_SOURCE, DERIVED_STATUS_DESC, SCHED_METHOD, PAT_ONLINE_YN, WALK_IN_YN, visit_type_exc) %>%
   summarise(total = n()) %>%
   
@@ -613,11 +629,11 @@ appt_online_physician_summary <- appt_online_physician %>%
               values_fill = 0) %>%
   rowwise() %>%
   mutate(total_online_bookings = sum(EXC_avail_N_sched_N, EXC_avail_Y_sched_N, EXC_avail_Y_sched_Y, INC_avail_N_sched_N, INC_avail_Y_sched_N, INC_avail_Y_sched_Y, na.rm = T),
-         perc_avail_online_all = (EXC_avail_Y_sched_N + EXC_avail_Y_sched_Y + INC_avail_Y_sched_N + INC_avail_Y_sched_Y) / 
+         perc_avail_online_all = (EXC_avail_Y_sched_N + EXC_avail_Y_sched_Y + INC_avail_Y_sched_N + INC_avail_Y_sched_Y) /
            (EXC_avail_N_sched_N + EXC_avail_Y_sched_N + EXC_avail_Y_sched_Y + INC_avail_N_sched_N + INC_avail_Y_sched_N + INC_avail_Y_sched_Y),
-         perc_sched_online_all = (EXC_avail_Y_sched_Y + INC_avail_Y_sched_Y) / 
+         perc_sched_online_all = (EXC_avail_Y_sched_Y + INC_avail_Y_sched_Y) /
            (EXC_avail_N_sched_N + EXC_avail_Y_sched_N + EXC_avail_Y_sched_Y + INC_avail_N_sched_N + INC_avail_Y_sched_N + INC_avail_Y_sched_Y),
-         perc_capture_online_all = (EXC_avail_Y_sched_Y + INC_avail_Y_sched_Y) / 
+         perc_capture_online_all = (EXC_avail_Y_sched_Y + INC_avail_Y_sched_Y) /
            (EXC_avail_Y_sched_N + EXC_avail_Y_sched_Y + INC_avail_Y_sched_N + INC_avail_Y_sched_Y),
          total_online_bookings_inScope = sum(INC_avail_N_sched_N, INC_avail_Y_sched_N, INC_avail_Y_sched_Y, na.rm = T),
          perc_avail_online_inScope = (INC_avail_Y_sched_N + INC_avail_Y_sched_Y) / (INC_avail_N_sched_N + INC_avail_Y_sched_N + INC_avail_Y_sched_Y),
@@ -630,6 +646,24 @@ appt_online_physician_summary <- appt_online_physician %>%
          # perc_sched_online = (avail_Y_sched_Y) / (avail_Y_sched_Y + avail_Y_sched_N)) %>%
   rename("Year" = appt_made_year,
          "Month" = appt_made_month)
+
+
+appt_online_physician_summary_commercial <- appt_online_physician %>%
+  filter(avail_online_exclude == "N") %>%
+  filter(FINCLASS == "COMMERCIAL_MANAGED_CARE") %>%
+  group_by(SITE, SPECIALTY_GRP, DEPT_SPECIALTY_NAME, DEPARTMENT_NAME, DEPARTMENT_ID, PROV_TYPE, PROV_NAME_WID, PROV_ID, appt_made_year, appt_made_month,
+           avail_online, sched_online, online_exclude_criteria, FINCLASS) %>%
+  summarise(appts_sched = sum(total, na.rm = T)) %>%
+  pivot_wider(names_from = c("online_exclude_criteria", "avail_online", "sched_online","FINCLASS"),
+              values_from = appts_sched,
+              values_fill = 0) %>%
+  rename("Year" = appt_made_year,
+         "Month" = appt_made_month)
+
+
+
+appt_online_physician_summary_merged <- left_join(appt_online_physician_summary, appt_online_physician_summary_commercial)
+
 
 
 appt_online_physician_summary_status <- appt_online_physician_summary %>%
@@ -2832,7 +2866,7 @@ htmltools::browsable(
 #     tags$hr("aria-hidden" = "true"),
     
 reactable(
-  appt_online_physician_summary, 
+  appt_online_physician_summary_merged, 
   elementId = "digital-metrics",
   # elementId = "referral-vol-download-table",
   style = list(fontFamily = 'Calibri',
@@ -3197,8 +3231,13 @@ reactable(
     EXC_avail_Y_sched_Y = colDef(show =F),
     INC_avail_N_sched_N = colDef(show =F),
     INC_avail_Y_sched_N= colDef(show =F),
-    INC_avail_Y_sched_Y = colDef(show =F)
-    
+    INC_avail_Y_sched_Y = colDef(show =F),
+    EXC_avail_N_sched_N_COMMERCIAL_MANAGED_CARE = colDef(show =F),
+    INC_avail_N_sched_N_COMMERCIAL_MANAGED_CARE = colDef(show =F),
+    INC_avail_Y_sched_N_COMMERCIAL_MANAGED_CARE = colDef(show =F),
+    INC_avail_Y_sched_Y_COMMERCIAL_MANAGED_CARE = colDef(show =F),
+    EXC_avail_Y_sched_N_COMMERCIAL_MANAGED_CARE = colDef(show =F),
+    EXC_avail_Y_sched_Y_COMMERCIAL_MANAGED_CARE = colDef(show =F)
 
   ) # Close Columns
 
