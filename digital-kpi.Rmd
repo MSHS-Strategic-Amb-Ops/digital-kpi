@@ -614,6 +614,7 @@ appt_online_physician <- appt_online_physician %>%
 #   mutate(avail_online = ifelse((COULD_DIR_SCHED + COULD_OPEN_SCHED + COULD_TKT_SCHED)>0, "avail_Y", "avail_N")) %>%
 #   mutate(sched_online = ifelse((avail_online == "avail_Y" & WALK_IN_YN == "N" & PAT_ONLINE_YN == "Y"), "sched_Y", "sched_N"))
 
+invisible(gc())
 ```
 
 
@@ -688,6 +689,7 @@ appt_online_physician_summary_status <- appt_online_physician_summary %>%
   relocate(PERC_BOTH_OPN_SCHED_DSCHED, .after = "PERC_BOTH_DSCHED") %>%
   ungroup()
 
+invisible(gc())
 ```
 
 
@@ -721,6 +723,8 @@ appt_online_criteria_summary <- appt_online_physician %>%
          # perc_sched_online = (avail_Y_sched_Y) / (avail_Y_sched_Y + avail_Y_sched_N)) %>%
   rename("Year" = appt_made_year,
          "Month" = appt_made_month)
+
+invisible(gc())
 
 ```
 
