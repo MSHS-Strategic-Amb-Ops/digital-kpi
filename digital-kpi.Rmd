@@ -538,6 +538,8 @@ digital_status <- access_raw_tbl %>%
   collect()
 
 
+invisible(gc())
+
 ```
 
 
