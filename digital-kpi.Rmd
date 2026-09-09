@@ -1,6 +1,7 @@
 ---
 output:
-  html_document
+  html_document:
+    self_contained: false
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
