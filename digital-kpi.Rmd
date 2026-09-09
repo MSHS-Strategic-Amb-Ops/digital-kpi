@@ -1203,6 +1203,7 @@ reactable(
 # ) # Close Taglist
 # ) # Close htmltools
 
+invisible(gc())
 ```
 <br/>
 <p style="font-size:10pt; font-style:italic">% Available Online: The percentage of appointments that were available for online scheduling, out of all scheduled appointments.<p/>
@@ -1614,6 +1615,7 @@ reactable(
 # ) # Close Taglist
 # ) # Close htmltools
 
+invisible(gc())
 ```
 <br/>
 <p style="font-size:10pt; font-style:italic">% Available Online: The percentage of appointments that were available for online scheduling, out of all scheduled appointments.<p/>
@@ -2025,6 +2027,7 @@ reactable(
 # ) # Close Taglist
 # ) # Close htmltools
 
+invisible(gc())
 ```
 <br/>
 <p style="font-size:10pt; font-style:italic">% Available Online: The percentage of appointments that were available for online scheduling, out of all scheduled appointments.<p/>
@@ -2436,6 +2439,7 @@ reactable(
 # ) # Close Taglist
 # ) # Close htmltools
 
+invisible(gc())
 ```
 <br/>
 <p style="font-size:10pt; font-style:italic">% Available Online: The percentage of appointments that were available for online scheduling, out of all scheduled appointments.<p/>
@@ -2846,6 +2850,7 @@ reactable(
 ) # Close Taglist
 ) # Close htmltools
 
+invisible(gc())
 ```
 <br/>
 <p style="font-size:10pt; font-style:italic">% Available Online: The percentage of appointments that were available for online scheduling, out of all scheduled appointments.<p/>
@@ -3257,6 +3262,8 @@ reactable(
 ) # Close Taglist
 ) # Close htmltools
 
+invisible(gc())
+
 ```
 <br/>
 <p style="font-size:10pt; font-style:italic">% Available Online: The percentage of appointments that were available for online scheduling, out of all scheduled appointments.<p/>
@@ -3583,6 +3590,8 @@ reactable(
   ) # Close Reactable
 ) # Close Taglist
 ) # Close htmltools
+
+invisible(gc())
 
 ```
 <br/>
